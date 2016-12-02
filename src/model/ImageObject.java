@@ -8,13 +8,12 @@ public class ImageObject {
 	int[] histogramOfImage = new int[159];
 	int totalPixels;
 	ArrayList<Float> percentageOfColors = new ArrayList<Float>();
-	int numAcceptedColors =0 ;
 	
 	// For Color Histogram
 	public ImageObject(int[] histogram, int pixels){
 		histogramOfImage = histogram; // the LUV values
 		totalPixels = pixels;
-		getAcceptedColors();
+		getFrequencyOfColors();
 	}
 	
 	public void printPercentage(){
@@ -33,59 +32,15 @@ public class ImageObject {
 		System.out.println(ans);
 	}
 	
-	public void getAcceptedColors(){
-		// Gets the colors of Image Q (chosen image) na hindi 0.0
-		
-//		ArrayList<Integer> temp = new ArrayList<Integer>();
-//		System.out.println("\ngetAcceptedColors()");
+	public void getFrequencyOfColors(){
 		
 		//159 is the total number of LUV colors we have
 		for(int x=0; x<159; x++){
-			if(histogramOfImage[x] != 0){
-				float ans = (float)histogramOfImage[x] / (float)totalPixels; // gets the histogram; this is the NH(Q) part
+			
+				float ans = (float)histogramOfImage[x] / (float)totalPixels; 
 				percentageOfColors.add(ans);
-				
-				if( ans > 0.005){
-					numAcceptedColors++;
-				}
-			}else{
-				percentageOfColors.add((float)0.0);
-			}
 			
-//			System.out.println("percentageOfColor(" + x + ") = " + percentageOfColors.get(x));
 		}
 		
-	}
-	
-	public float getSimilarity(ImageObject img2){
-		// Gets similarity of Image Q (chosen image) to another image; SIMexact part
-		
-		float checkerHistogram = 0; // the sum of all histogram must be 1.00
-		float ans= (float)0.0;
-		
-//		System.out.println("\ngetSimilarity()");
-		for(int x = 0; x < percentageOfColors.size(); x++ ){
-			checkerHistogram += percentageOfColors.get(x);
-			
-			if(percentageOfColors.get(x) > 0.005){
-				
-				float numerator = Math.abs(percentageOfColors.get(x)-img2.percentageOfColors.get(x));
-				float denominator =  Math.max(percentageOfColors.get(x), img2.percentageOfColors.get(x));
-				
-//				System.out.println("percentageOfColor(" + x + ") = " + percentageOfColors.get(x));
-				
-				float temp = (float)1-(numerator/denominator);		
-				ans+= temp;
-			}
-		}
-		
-		float temp1 = (float)1/numAcceptedColors;
-		float finalAns = ans * temp1;
-		
-//		System.out.println("numAcceptedColors = " + numAcceptedColors);
-//		System.out.println("checkerHistogram = " + checkerHistogram);
-//		System.out.println("Similarity: " + finalAns);
-		
-		return finalAns;
 	}
 }
