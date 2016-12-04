@@ -1,35 +1,20 @@
 package model;
 
 /*
- * This class is just a cleaner version of Image.java to be used
- * for the project
+ * MP1 File
+ * This class is just a cleaner version of Image.java to be used for the project
+ * Gets RGB->LUV of each pixel for the whole image
  */
 
-import java.awt.*;
-import java.awt.event.*;
 import com.sun.image.codec.jpeg.*;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.*;
-import java.util.ArrayList;
-
-import javax.swing.*;
 import java.awt.image.ColorModel;
 
 public class ImageController {
 	
-	static int[][] matrixArray;
-	
-	public ImageController(){
-		
-	}
-	
-	public int[][] getMatrixArray(){
-		return matrixArray;
-	}
-	
-	public static ImageObject convertImageCH(String Path, String Filename){
+	public int[] convertImageCH(String Path, String Filename){
 		// loops through every pixel instead of getRGB() being a single pixel
 		// Gets RGB->LUV of each pixel for the whole image
 		
@@ -88,8 +73,10 @@ public class ImageController {
 	        	}
 	        }
         	
-	        ImageObject tempImg = new ImageObject(tempArray,totalPixels);
-        	return tempImg;
+//	        ImageObject tempImg = new ImageObject(tempArray,totalPixels);
+//        	return tempImg;
+        	
+        	return tempArray;
 	}
 	
 	/*public static void main(String Args[]){

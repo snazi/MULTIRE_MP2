@@ -1,3 +1,7 @@
+/*
+ * MP1 File from Dr.Conrado
+ */
+
 package model;
 /*
  * @(#)Image.java 1.0 03/07/08

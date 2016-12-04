@@ -1,3 +1,7 @@
+/*
+ * MP1 File from Dr.Conrado
+ */
+
 package model;
 /* ---------------------------------------------------------------------------------
  * CIE Color Space Conversion Class

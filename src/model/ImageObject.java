@@ -1,3 +1,7 @@
+/*
+ * [NOT NEEDED] Gets the Histogram of an image (frame)
+ */
+
 package model;
 
 import java.util.ArrayList;
@@ -38,9 +42,7 @@ public class ImageObject {
 		for(int x=0; x<159; x++){
 			
 				float ans = (float)histogramOfImage[x] / (float)totalPixels; 
-				percentageOfColors.add(ans);
-			
-		}
-		
+				percentageOfColors.add(ans);	
+		}	
 	}
 }
