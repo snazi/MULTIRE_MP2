@@ -56,7 +56,7 @@ public class Driver {
 			}
 		}
 		
-		ShotBoundary shotBoundary = new ShotBoundary(6, 450); //ShotBoundary(a, Ts)
+		ShotBoundary shotBoundary = new ShotBoundary(6, 2100); //ShotBoundary(a, Ts)
 		shotBoundary.computeTb(differenceMetric.averageAllDifferenceMetric(), differenceMetric.stdevAllDifferenceMetric());
 		shotBoundary.getAbruptTransition(differenceMetric.getDifferenceMetricArray());
 		shotBoundary.printAbrupt();

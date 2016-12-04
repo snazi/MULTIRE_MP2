@@ -49,43 +49,60 @@ public class ShotBoundary {
 	public void getGradualTransition(DifferenceMetric[] differenceMetricArray){
 		ArrayList<String> tempGradualTransitionList = new ArrayList<String>(0);
 		int accumulatedDifference = 0;
+		String frameStart="";
+		String frameEnd;
+		int tolerance = 0;
+		boolean foundGradualBoundary = false;
 		
 		for(int i = 0; i < differenceMetricArray.length; i++){
+			//iterate over the SDi Array
+			
 			if(differenceMetricArray[i].getDifferenceMetric() > Tb){
+				//if SDi is greater than Threshold we've found our abrupt shot boundary
 				System.out.println("Shot Boundary: " + differenceMetricArray[i].getFilename() + 
 						"; DifferenceMetric: " + differenceMetricArray[i].getDifferenceMetric());
-			}
-			else if(differenceMetricArray[i].getDifferenceMetric() < Tb && differenceMetricArray[i].getDifferenceMetric() > Ts){
+				
+			}else if((differenceMetricArray[i].getDifferenceMetric() < Tb && differenceMetricArray[i].getDifferenceMetric() > Ts) || foundGradualBoundary){
 				// if diffMetric > Ts --> potential gradual transition, start accumulating differences from that frame
 				// until the transition (diffMetric yata) becomes lower than Ts
-				tempGradualTransitionList.add(differenceMetricArray[i].getFilename());
+				
+				//if SDi is less than Tb it isnt an abrupt change but, if SDi is greater than Ts its a possible gradual transition
+				//it is possible that the next frame is less than Ts so we can disregard it but count it as part of the interval
+				//this is where tolerance comes in. we only allow 3 frames below Ts to be part of the equation
+				
+				if(!foundGradualBoundary){
+					frameStart = differenceMetricArray[i].getFilename();
+					foundGradualBoundary = true;
+				}
+				
+				if(differenceMetricArray[i].getDifferenceMetric() < Ts){
+					tolerance++;
+					if(tolerance >= 6){
+						foundGradualBoundary = false;
+						tolerance =0;
+					}
+				}
+				
+				if(differenceMetricArray[i].getDifferenceMetric() > Ts)
 				accumulatedDifference += differenceMetricArray[i].getDifferenceMetric();
 				
-				System.out.println("Potential Gradual:" + differenceMetricArray[i].getFilename() + 
-						"; DifferenceMetric: " + differenceMetricArray[i].getDifferenceMetric());
-			}
-			else if(differenceMetricArray[i].getDifferenceMetric() < Ts){
-				// diffMetric < Ts --> stop accumulating --> compare if accumulatedDiff > Tb
-				// if yes, then transfer tempGradualTransList to gradualTransList
-				if(!tempGradualTransitionList.isEmpty()){
-					if(accumulatedDifference > Tb){
-						String gradualTransition = "";
-						
-						for(int j = 0; j < tempGradualTransitionList.size(); j++){
-							gradualTransition += tempGradualTransitionList.get(j);
-							if(j != tempGradualTransitionList.size()-1){
-								gradualTransition += ", ";
-							}
-						}
-						gradualTransitionList.add(gradualTransition);
-						System.out.println("-------");
-					}
-					tempGradualTransitionList.clear();
+				if(accumulatedDifference > Tb){
+					frameEnd = differenceMetricArray[i].getFilename();
+					
+					System.out.println("Fs: "+frameStart+" Fe: "+frameEnd);
+					
+					tolerance=0;
+					foundGradualBoundary = false;
+					accumulatedDifference = 0;
 				}
+				
+				
 			}
 		}
 	}
 	
+	
+
 	// Prints the gradualTransitionList
 	public void printGradual(){
 		System.out.println("Gradual Transition List:");
