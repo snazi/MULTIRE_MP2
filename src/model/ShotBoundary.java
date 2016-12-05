@@ -23,13 +23,17 @@ public class ShotBoundary {
 	}
 	
 	// Computes for the Shot Boundary (SDi > Tb)
-	public void getAbruptTransition(DifferenceMetric[] differenceMetricArray){
+	public ArrayList<Integer> getAbruptTransition(DifferenceMetric[] differenceMetricArray){
+		ArrayList<Integer> temp = new ArrayList<Integer>(0);
 		for(int i = 0; i < differenceMetricArray.length; i++){
 			if(differenceMetricArray[i].getDifferenceMetric() > Tb){
 				abruptTransitionList.add(differenceMetricArray[i].getFilename());
 				System.out.println("Shot Boundary: " + differenceMetricArray[i].getDifferenceMetric());
+				temp.add(i);
 			}
 		}
+		
+		return temp;
 	}
 	
 	// Prints the abruptTransitionList
@@ -71,11 +75,14 @@ public class ShotBoundary {
 				//this is where tolerance comes in. we only allow 3 frames below Ts to be part of the equation
 				
 				if(!foundGradualBoundary){
+					//this means that it has not detected a starting frame or "Fs" in the slides
+					// so we set the current frame to be Fs
 					frameStart = differenceMetricArray[i].getFilename();
 					foundGradualBoundary = true;
 				}
 				
 				if(differenceMetricArray[i].getDifferenceMetric() < Ts){
+					// if the frame is less that Ts we can "tolerate" it but only til indicated
 					tolerance++;
 					if(tolerance >= 6){
 						foundGradualBoundary = false;

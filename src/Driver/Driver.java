@@ -30,12 +30,17 @@ public class Driver {
 	}*/
 	
 	public static void testSystem(){
-		String path = "images/uni/";
+		String path = "images/777/";
 		File folder = new File(path);
 		int numFiles = folder.listFiles().length; // needed to assign the index for the difference metric
 		int[] frame1 = new int[159]; // 159 LUV values
 		int[] frame2 = new int[159]; // 159 LUV values
 		HistogramDifferenceMetric differenceMetric = new HistogramDifferenceMetric(numFiles);
+		ArrayList<int[]> allFrameHistogram = new ArrayList<int[]>(0);//just stores the histograms to be used for Average Histogram Method
+		ArrayList<Integer> abruptIndexes = new ArrayList<Integer>(0);//we need indexes for the abrupt changes/Shot boundaries
+		ArrayList<Integer> keyframesRaw = new ArrayList<Integer>(0);
+		ArrayList<Integer> keyframesRefined = new ArrayList<Integer>(0);
+		
 		
 		// Loops through the all of the frames, getting all the color frequency count of each frame
 		// and computes for the difference metric
@@ -47,6 +52,7 @@ public class Driver {
 			
 			frame1 = frame2;
 			frame2 = imageController.convertImageCH(path, file);
+			allFrameHistogram.add(frame2);
 			
 			if(i > 0){
 				int dM = differenceMetric.computeDifferenceMetric(frame1, frame2);
@@ -58,10 +64,26 @@ public class Driver {
 		
 		ShotBoundary shotBoundary = new ShotBoundary(6, 2100); //ShotBoundary(a, Ts)
 		shotBoundary.computeTb(differenceMetric.averageAllDifferenceMetric(), differenceMetric.stdevAllDifferenceMetric());
-		shotBoundary.getAbruptTransition(differenceMetric.getDifferenceMetricArray());
-		shotBoundary.printAbrupt();
+		abruptIndexes = shotBoundary.getAbruptTransition(differenceMetric.getDifferenceMetricArray());
 		shotBoundary.getGradualTransition(differenceMetric.getDifferenceMetricArray());
-		shotBoundary.printGradual();
+		
+		for(int x = 0; x<abruptIndexes.size(); x++){
+			System.out.println(abruptIndexes.get(x));
+		}
+		
+		keyframe kf = new keyframe();
+		keyframesRaw = kf.getKeyframe(allFrameHistogram, abruptIndexes);
+		
+		keyframesRefined.add(keyframesRaw.get(0));
+		for(int nCtr = 0; nCtr < abruptIndexes.size(); nCtr++){
+			keyframesRefined.add(keyframesRaw.get(nCtr+1) + abruptIndexes.get(nCtr));
+		}
+		
+		System.out.println("Keyframes are: ");
+		for(int nCtr = 0; nCtr < keyframesRefined.size(); nCtr++){
+			System.out.println(keyframesRefined.get(nCtr)+".jpg");
+		}
+		
 	}
 	
 }
